@@ -1,6 +1,8 @@
 package com.onj.template_manage.service;
 
 import com.onj.template_manage.DTO.Request.UserSignUpRequestDTO;
+import com.onj.template_manage.DTO.Request.UserUpdateRequestDTO;
+import com.onj.template_manage.DTO.Response.UserSelectResponseDTO;
 import com.onj.template_manage.entity.User;
 import com.onj.template_manage.exception.User.UserAlreadyExistsException;
 import com.onj.template_manage.exception.User.UserNotFoundException;
@@ -80,4 +82,49 @@ public class UserService {
             throw new UserNotValidatePasswordException();
         }
     }
+
+    public Optional<UserSelectResponseDTO> selectUserById(String id){
+        Optional<User> user =  userRepository.findById(id);
+        if (user.isPresent()) {
+            UserSelectResponseDTO userSelectResponseDTO = new UserSelectResponseDTO(user.get().getId(),user.get().getRole());
+            return Optional.of(userSelectResponseDTO);
+        } else{
+            log.error("회원 조회 실패: 존재하지 않는 회원 ID: {}", id);
+            throw new UserNotFoundException();
+        }
+    }
+
+    public void updateUser(UserUpdateRequestDTO userUpdateRequestDTO){
+        validateMember(userUpdateRequestDTO.getId(), userUpdateRequestDTO.getPresentPassword());
+
+        Optional<User> validUser = userRepository.findById(userUpdateRequestDTO.getId());
+
+        if (validUser.isPresent()) {
+            User user = validUser.get();
+            user.setPassword(passwordEncoder.encode(userUpdateRequestDTO.getUpdatePassword()));
+            userRepository.save(user);
+            log.info("회원 정보 수정 성공: {}", user.getId());
+        } else {
+            log.error("회원 정보 수정 실패: 존재하지 않는 회원 ID: {}", userUpdateRequestDTO.getId());
+            throw new UserNotFoundException();
+        }
+    }
+
+    @Transactional
+    public void deleteMember(UserSignUpRequestDTO userDeleteRequestDTO){
+
+        validateMember(userDeleteRequestDTO.getId(), userDeleteRequestDTO.getPassword());
+
+        Optional<User> deleteUser = userRepository.findById(userDeleteRequestDTO.getId());
+
+        if (deleteUser.isPresent()) {
+            userRepository.deleteById(deleteUser.get().getNum());  // 제품이 존재하면 삭제
+            log.info("회원 삭제 성공: {}", userDeleteRequestDTO.getId());
+        }else {
+            log.error("회원 삭제 실패: 존재하지 않는 회원 ID: {}", userDeleteRequestDTO.getId());
+            throw new UserNotFoundException();
+        }
+    }
+
+
 }

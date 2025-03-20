@@ -1,5 +1,7 @@
 package com.onj.template_manage.config;
 
+import com.onj.template_manage.jwt.JwtAuthenticationFilter;
+import com.onj.template_manage.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -28,7 +31,6 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/onj/template-manage/user/sign-up").permitAll()
                 .requestMatchers("/onj/template-manage/user/sign-in").permitAll()
-
 //                // USER 권한이 있어야 요청할 수 있음
 //                .requestMatchers("/frankit/product-manage/admin/**").hasRole("ADMIN")
 //                .requestMatchers("/frankit/product-manage/*").hasRole("USER")
@@ -39,7 +41,7 @@ public class SecurityConfig {
                 .headers().frameOptions().sameOrigin()
                 .and()
                 // JWT 인증을 위하여 직접 구현한 필터를 UsernamePasswordAuthenticationFilter 전에 실행
-//                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }

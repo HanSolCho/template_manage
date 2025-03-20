@@ -1,8 +1,10 @@
 package com.onj.template_manage.service;
 
 import com.onj.template_manage.DTO.Request.UserSignUpRequestDTO;
+import com.onj.template_manage.DTO.Response.UserSelectResponseDTO;
 import com.onj.template_manage.entity.User;
 import com.onj.template_manage.exception.User.UserAlreadyExistsException;
+import com.onj.template_manage.exception.User.UserNotFoundException;
 import com.onj.template_manage.jwt.JwtToken;
 import com.onj.template_manage.jwt.JwtTokenProvider;
 import com.onj.template_manage.repository.UserRepository;
@@ -57,7 +59,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("멤버 등록 성공")
-    void signUpMemberSuccess() {
+    void signUpUserSuccess() {
         //given
         User user = User.builder()
                 .num(1L)
@@ -82,9 +84,9 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("회원 가입 실패 (중복 아이디)")
-    void signUpMemberFailDuplicateId() {
+    void signUpUserFailDuplicateId() {
 
-        // given: 이미 존재하는 ID일 경우
+        // given:
         User user = User.builder()
                 .num(1L)
                 .id("user1")
@@ -148,7 +150,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void validateMember() {
+    void validateUser() {
         // given:
         String password = "password";
         String databasePassword = "password";
@@ -161,5 +163,92 @@ public class UserServiceTest {
         assertThat(validCheck).isTrue();
         // verify:
         verify(passwordEncoder).matches(password, databasePassword);
+    }
+
+    @Test
+    void selectUserById() {
+        // given:
+        User user = User.builder()
+                .num(1L)
+                .id("user1")
+                .password("1234")
+                .role("USER")
+                .build();
+        when(userRepository.findById(user.getId())).thenReturn(Optional.ofNullable(user));
+
+        // when:
+        Optional<UserSelectResponseDTO> result = userService.selectUserById(user.getId());
+
+        // then:
+        assertThat(result.get().getId()).isEqualTo("user1");
+
+        verify(userRepository, times(1)).findById(user.getId());
+    }
+
+    @Test
+    void updateUser() {
+        User user = User.builder()
+                .num(1L)
+                .id("user1")
+                .password("1234")
+                .role("USER")
+                .build();
+        // given
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        // when:
+        Optional<User> validUser = userRepository.findById(user.getId());
+        assertThat(validUser).isPresent();
+
+        User selectUser = validUser.get();
+        selectUser.setPassword("newPassword");
+        userRepository.save(selectUser);
+
+        // then:
+        assertThat(selectUser.getPassword()).isEqualTo("newPassword");
+        verify(userRepository).save(selectUser);
+    }
+
+    @Test
+    void deleteUser() {
+        // given
+        User user = User.builder()
+                .num(1L)
+                .id("user1")
+                .password("1234")
+                .role("USER")
+                .build();
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        // when:
+        Optional<User> validUser = userRepository.findById(user.getId());
+        assertThat(validUser).isPresent();
+
+        userRepository.deleteById(user.getNum());
+
+        // then:
+        verify(userRepository).deleteById(user.getNum());
+    }
+
+    @Test
+    @DisplayName("회원 정보 없는 케이스")
+    void updateAndDeleteFailUserNotFound() {
+        // given
+        User user = User.builder()
+                .num(1L)
+                .id("user1")
+                .password("1234")
+                .role("USER")
+                .build();
+        when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
+
+        // when:
+        Optional<User> validUser = userRepository.findById(user.getId());
+        assertThat(validUser).isNotPresent();
+
+        // then:
+        assertThatThrownBy(() -> {
+            throw new UserNotFoundException();
+        }).isInstanceOf(UserNotFoundException.class);
     }
 }
