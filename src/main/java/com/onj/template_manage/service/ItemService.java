@@ -1,17 +1,22 @@
 package com.onj.template_manage.service;
 
+import com.onj.template_manage.DTO.Request.ItemDeleteRequestDTO;
 import com.onj.template_manage.DTO.Request.ItemOptionRegisterRequestDTO;
 import com.onj.template_manage.DTO.Request.ItemRegisterRequestDTO;
 import com.onj.template_manage.DTO.Request.ItemSelectRequestDTO;
+import com.onj.template_manage.DTO.Response.SelectedItemOptionResponseDTO;
 import com.onj.template_manage.DTO.Response.SelectedItemResponseDTO;
 import com.onj.template_manage.DTO.Response.SelectedItemResponsePagingDTO;
 import com.onj.template_manage.entity.Item;
 import com.onj.template_manage.entity.ItemOption;
 import com.onj.template_manage.entity.ItemType;
 import com.onj.template_manage.exception.Item.ItemNotRegisterFromUserException;
+import com.onj.template_manage.exception.Item.ItemOptionIsNullException;
 import com.onj.template_manage.repository.ItemOptionRepository;
 import com.onj.template_manage.repository.ItemRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
+import org.h2.api.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +30,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.onj.template_manage.exception.ErrorCode.ITEM_OPTION_IS_NULL;
 
 @Service
 @Log4j2
@@ -71,20 +78,27 @@ public class ItemService {
                 .map(item -> {
                     // ItemType이 TEXT인 경우 옵션 리스트를 비운다.
                     SelectedItemResponseDTO dto = new SelectedItemResponseDTO(item);
-                    if (item.getType() == ItemType.TEXT) {
-                        dto.setSelectedItemOptionResponseDTOList(new ArrayList<>());  // 빈 리스트로 설정
-                    }
-                    return dto;})
+
+                    // ItemOption의 isDeleted가 false인 값만 필터링하여 리스트 설정
+                    List<SelectedItemOptionResponseDTO> filteredOptions = item.getItemOptions().stream()
+                            .filter(option -> !option.getIsDeleted())  // isDeleted가 false인 값만 필터링
+                            .map(option -> new SelectedItemOptionResponseDTO(option))
+                            .collect(Collectors.toList());
+
+                    dto.setSelectedItemOptionResponseDTOList(filteredOptions);  // 필터링된 옵션을 설정
+
+                    return dto;
+                })
                 .collect(Collectors.toList());
 
         // 페이징 정보와 함께 반환
         return new SelectedItemResponsePagingDTO(selectedItemResponseDTOList, itemPage.getNumber(), itemPage.getSize());
     }
 
+    @Transactional
     public void updateItem(ItemRegisterRequestDTO itemRegisterRequestDTO) {
 
-        Optional<Item> item = itemRepository.findByNameContainingIgnoreCase(itemRegisterRequestDTO.getName());
-
+        Optional<Item> item = itemRepository.findById(itemRegisterRequestDTO.getId());
         if(item.isPresent() && item.get().getProvider().equals(itemRegisterRequestDTO.getProvider())) {
 
             if(item.get().getType() == ItemType.TEXT && itemRegisterRequestDTO.getType() != ItemType.TEXT) {
@@ -93,12 +107,26 @@ public class ItemService {
                 updateItem.setType(itemRegisterRequestDTO.getType());
 
                 Item updatedItem = itemRepository.save(updateItem);
-                //텍스트 타입이었으나 그외 타입으로 변경 -> 하위옵션 추가 필요
+                if (itemRegisterRequestDTO.getOption() == null || itemRegisterRequestDTO.getOption().isEmpty()) {
+                    throw new ItemOptionIsNullException();
+                }
                 for (ItemOptionRegisterRequestDTO option : itemRegisterRequestDTO.getOption()) {
                     ItemOption itemOption = ItemOption.builder()
                             .optionValue(option.getName())
                             .item(updatedItem)
                             .build();
+                    itemOptionRepository.save(itemOption);
+                }
+            } else if (item.get().getType() != ItemType.TEXT && itemRegisterRequestDTO.getType() == ItemType.TEXT) {
+                //텍스트 이외의타입이 텍스트로 변경시 하위 옵션 소프트삭제 진행
+                Item updateItem = item.get();
+                updateItem.setName(itemRegisterRequestDTO.getName());
+                updateItem.setType(itemRegisterRequestDTO.getType());
+
+                List<ItemOption> itemOptionList = itemOptionRepository.findByItemId(updateItem.getId());
+
+                for(ItemOption itemOption : itemOptionList) {
+                    itemOption.setIsDeleted(true);
                     itemOptionRepository.save(itemOption);
                 }
             } else{
@@ -113,6 +141,27 @@ public class ItemService {
             //아이템이 없거나 자신의아이템이 아님을 알려주는 익셉션
             log.error("등록된 Item 존재하지 않습니다.: {}", itemRegisterRequestDTO.getName());
             throw new ItemNotRegisterFromUserException();
+        }
+    }
+
+    public void softDeleteItem(ItemDeleteRequestDTO itemDeleteRequestDTO) {
+        Optional<Item> item = itemRepository.findById(itemDeleteRequestDTO.getId());
+        if(item.isPresent() && item.get().getProvider().equals(itemDeleteRequestDTO.getProvider())) {
+            Item deleteItem = item.get();
+            deleteItem.setIsDeleted(true);
+            itemRepository.save(deleteItem);
+
+            List<ItemOption> itemOptionList = itemOptionRepository.findByItemId(deleteItem.getId());
+
+            for(ItemOption itemOption : itemOptionList) {
+                itemOption.setIsDeleted(true);
+                itemOptionRepository.save(itemOption);
+            }
+
+        } else {
+        //아이템이 없거나 자신의아이템이 아님을 알려주는 익셉션
+        log.error("등록된 Item 존재하지 않습니다.: {}", itemDeleteRequestDTO.getId());
+        throw new ItemNotRegisterFromUserException();
         }
     }
 }

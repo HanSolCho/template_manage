@@ -6,10 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ItemRegisterRequestDTO {
+public class ItemDeleteRequestDTO {
     Long id;
-    String name;
     String provider;
-    ItemType type;
-    List<ItemOptionRegisterRequestDTO> option;
 }

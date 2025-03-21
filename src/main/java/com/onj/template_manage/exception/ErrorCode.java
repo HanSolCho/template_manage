@@ -10,7 +10,8 @@ public enum ErrorCode {
     USER_ALREADY_EXISTS(409, "이미 존재하는 회원 아이디입니다."),
 
     // 아이템 관련 오류 코드
-    ITEM_NOT_FOUND(404, "등록된 아이템 목록에 존재 하지 않습니다."),
+    ITEM_NOT_FOUND(404, "등록할 아이템 목록이 존재 하지 않습니다."),
+    ITEM_OPTION_IS_NULL(404, "아이템 옵션 값이 존재하지 않습니다."),
     // 로그인 관련 오류 코드
     INVALID_LOGIN_INFO(401, "잘못된 아이디 또는 비밀번호입니다."),
 

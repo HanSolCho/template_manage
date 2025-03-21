@@ -1,6 +1,8 @@
 package com.onj.template_manage.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.onj.template_manage.DTO.Request.ItemDeleteRequestDTO;
 import com.onj.template_manage.DTO.Request.ItemRegisterRequestDTO;
 import com.onj.template_manage.DTO.Request.ItemSelectRequestDTO;
 import com.onj.template_manage.config.TestSecurityConfig;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ItemController.class)
@@ -70,5 +73,38 @@ class ItemControllerTest {
 
         verify(itemService, times(1)).selectItems(itemSelectRequestDTO);
 
+    }
+
+    @Test
+    void updateItems() throws Exception {
+        //given
+        ItemRegisterRequestDTO itemRegisterRequestDTO = new ItemRegisterRequestDTO();
+        itemRegisterRequestDTO.setName("item1");
+        itemRegisterRequestDTO.setType(ItemType.TEXT);
+        itemRegisterRequestDTO.setProvider("provider1");
+        itemRegisterRequestDTO.setOption(new ArrayList<>());
+
+        //when & then: 예상되는 결과 검증
+        mockMvc.perform(put("/onj/template-manage/item/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(itemRegisterRequestDTO)))
+                .andExpect(status().isOk());
+
+        verify(itemService, times(1)).updateItem(itemRegisterRequestDTO);
+    }
+
+    @Test
+    void deleteItems() throws Exception {
+        ItemDeleteRequestDTO itemDeleteRequestDTO = new ItemDeleteRequestDTO();
+        itemDeleteRequestDTO.setId(1L);
+        itemDeleteRequestDTO.setProvider("provider1");
+
+        //when & then: 예상되는 결과 검증
+        mockMvc.perform(put("/onj/template-manage/item/delete")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(itemDeleteRequestDTO)))
+                .andExpect(status().isOk());
+
+        verify(itemService, times(1)).softDeleteItem(itemDeleteRequestDTO);
     }
 }

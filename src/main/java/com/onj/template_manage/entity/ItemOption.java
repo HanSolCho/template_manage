@@ -14,9 +14,10 @@ public class ItemOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false)
     private String optionValue;
+    @Column(nullable = false)
+    private Boolean isDeleted;
 
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)

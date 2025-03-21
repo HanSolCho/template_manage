@@ -1,5 +1,6 @@
 package com.onj.template_manage.controller;
 
+import com.onj.template_manage.DTO.Request.ItemDeleteRequestDTO;
 import com.onj.template_manage.DTO.Request.ItemRegisterRequestDTO;
 import com.onj.template_manage.DTO.Request.ItemSelectRequestDTO;
 import com.onj.template_manage.DTO.Request.UserSignUpRequestDTO;
@@ -34,6 +35,13 @@ public class ItemController {
     @PutMapping("/update")
     public ResponseEntity<?> updateItems(@RequestBody ItemRegisterRequestDTO itemRegisterRequestDTO) {
         itemService.updateItem(itemRegisterRequestDTO);
+        return ResponseEntity.ok().build();
+    }
+
+    //소프트 delete 방식으로 db를 통한 상태값 관리 형식이기에 put채택
+    @PutMapping("/delete")
+    public ResponseEntity<?> deleteItems(@RequestBody ItemDeleteRequestDTO itemDeleteRequestDTO) {
+        itemService.softDeleteItem(itemDeleteRequestDTO);
         return ResponseEntity.ok().build();
     }
 }

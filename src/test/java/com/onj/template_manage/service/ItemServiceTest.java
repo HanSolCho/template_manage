@@ -1,5 +1,6 @@
 package com.onj.template_manage.service;
 
+import com.onj.template_manage.DTO.Request.ItemDeleteRequestDTO;
 import com.onj.template_manage.DTO.Request.ItemOptionRegisterRequestDTO;
 import com.onj.template_manage.DTO.Request.ItemRegisterRequestDTO;
 import com.onj.template_manage.DTO.Request.ItemSelectRequestDTO;
@@ -183,7 +184,7 @@ class ItemServiceTest {
     @Test
     void updateItemChangeType() {
 
-        // Given: itemRegisterRequestDTO와 기존 아이템 준비
+        // Given:
         Item existingItem = Item.builder()
                 .id(1L)
                 .name("Item1")
@@ -197,27 +198,22 @@ class ItemServiceTest {
         options.add(option1);
 
         ItemRegisterRequestDTO itemRegisterRequestDTO = new ItemRegisterRequestDTO();
+        itemRegisterRequestDTO.setId(1L);
         itemRegisterRequestDTO.setName("Item1");
         itemRegisterRequestDTO.setProvider("Provider1");
-        itemRegisterRequestDTO.setType(ItemType.CHECKBOX);  // 타입을 CHECKBOX로 변경
-        itemRegisterRequestDTO.setOption(options);  // 옵션 추가
+        itemRegisterRequestDTO.setType(ItemType.CHECKBOX);
+        itemRegisterRequestDTO.setOption(options);
 
-        // Mocking the repository
-        when(itemRepository.findByNameContainingIgnoreCase("Item1")).thenReturn(Optional.of(existingItem)); // 아이템 조회
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(existingItem)); // 아이템 조회
 
-        // Mocking save, 기존 아이템을 그대로 반환하도록 수정
         Item updatedItem = Item.builder()
                 .id(1L)
                 .name("Item1")
                 .provider("Provider1")
                 .type(ItemType.CHECKBOX)
                 .build();
-        when(itemRepository.save(any(Item.class))).thenReturn(updatedItem);  // 기존 아이템 반환
-
-        // Mocking ItemOptionRepository
-        when(itemOptionRepository.save(any(ItemOption.class))).thenReturn(mock(ItemOption.class));  // 옵션 저장 mock
-//        ItemOption mockedItemOption = mock(ItemOption.class);  // ItemOption을 Mock
-//        when(itemOptionRepository.save(any(ItemOption.class))).thenReturn(mockedItemOption);  // 옵션 저장 mock
+        when(itemRepository.save(any(Item.class))).thenReturn(updatedItem);
+        when(itemOptionRepository.save(any(ItemOption.class))).thenReturn(mock(ItemOption.class));
 
         // When: updateItem 메소드 실행
         itemService.updateItem(itemRegisterRequestDTO);
@@ -232,12 +228,13 @@ class ItemServiceTest {
     void updateItemItemNotFound() {
         // Given: 아이템이 존재하지 않거나 제공자가 일치하지 않는 경우
         ItemRegisterRequestDTO itemRegisterRequestDTO = new ItemRegisterRequestDTO();
+        itemRegisterRequestDTO.setId(1L);
         itemRegisterRequestDTO.setName("ItemNotExist");
         itemRegisterRequestDTO.setProvider("Provider1");
         itemRegisterRequestDTO.setType(ItemType.CHECKBOX);
 
         // Mocking: 아이템이 존재하지 않음
-        when(itemRepository.findByNameContainingIgnoreCase("ItemNotExist")).thenReturn(Optional.empty());
+        when(itemRepository.findById(1L)).thenReturn(Optional.empty());
 
         // When & Then: 아이템이 존재하지 않으면 예외가 발생해야 함
         assertThrows(ItemNotRegisterFromUserException.class,
@@ -255,17 +252,54 @@ class ItemServiceTest {
                 .build();
 
         ItemRegisterRequestDTO itemRegisterRequestDTO = new ItemRegisterRequestDTO();
+        itemRegisterRequestDTO.setId(1L);
         itemRegisterRequestDTO.setName("Item1");
         itemRegisterRequestDTO.setProvider("Provider1");
         itemRegisterRequestDTO.setType(ItemType.CHECKBOX);
 
         // Mocking: 아이템이 존재하지만 제공자가 일치하지 않음
-        when(itemRepository.findByNameContainingIgnoreCase("Item1")).thenReturn(Optional.ofNullable(existingItem));
+        when(itemRepository.findById(1L)).thenReturn(Optional.ofNullable(existingItem));
 
         // When & Then: 제공자가 일치하지 않으면 예외가 발생해야 함
         ItemNotRegisterFromUserException exception = assertThrows(ItemNotRegisterFromUserException.class,
                 () -> itemService.updateItem(itemRegisterRequestDTO));
 
         assertNotNull(exception);
+    }
+
+    @Test
+    void softDeleteItem() {
+        ItemDeleteRequestDTO itemDeleteRequestDTO = new ItemDeleteRequestDTO();
+        itemDeleteRequestDTO.setId(1L);
+        itemDeleteRequestDTO.setProvider("Provider1");
+
+        Item item = Item.builder()
+                .id(1L)
+                .provider("Provider1")
+                .isDeleted(false)
+                .build();
+
+        when(itemRepository.findById(itemDeleteRequestDTO.getId())).thenReturn(Optional.of(item));
+
+        ItemOption itemOption = ItemOption.builder()
+                .id(1L)
+                .item(item)
+                .isDeleted(false)
+                .build();
+
+        List<ItemOption> itemOptionList = List.of(itemOption);
+
+        when(itemOptionRepository.findByItemId(item.getId())).thenReturn(itemOptionList);
+        // 실제 메서드 실행
+        itemService.softDeleteItem(itemDeleteRequestDTO);
+
+        // 검증
+        verify(itemRepository, times(1)).save(item);
+        assertTrue(item.getIsDeleted(), "아이템 소프트 삭제");
+
+        for (ItemOption tempItemOption : itemOptionList) {
+            verify(itemOptionRepository, times(1)).save(tempItemOption);
+            assertTrue(tempItemOption.getIsDeleted(), "아이템 옵션 소프트 삭제");
+        }
     }
 }
