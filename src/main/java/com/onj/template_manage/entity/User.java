@@ -2,6 +2,7 @@ package com.onj.template_manage.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.AccessLevel;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.Collection;

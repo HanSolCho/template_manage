@@ -29,7 +29,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class) // Mockito와 Spring Test 통합
+@ExtendWith(SpringExtension.class)
 class ItemServiceTest {
 
     @Mock

@@ -1,8 +1,6 @@
 package com.onj.template_manage.repository;
 
-import com.onj.template_manage.entity.Item;
-import com.onj.template_manage.entity.ItemType;
-import com.onj.template_manage.entity.QItem;
+import com.onj.template_manage.entity.*;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -13,26 +11,26 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
+public class TemplateRepositoryCustomImpl implements TemplateRepositoryCustom {
 
-//    private final EntityManager entityManager;
     private final JPAQueryFactory queryFactory;
 
     @Autowired
-    public ItemRepositoryCustomImpl(EntityManager entityManager) {
+    public TemplateRepositoryCustomImpl(EntityManager entityManager) {
 //        this.entityManager = entityManager;
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
 
     @Override
-    public Page<Item> findItemsByFilters(String name, ItemType type, String userId, Pageable pageable) {
-        QItem qItem = QItem.item;
+    public Page<Template> findTemplateByFilters(String name, String type, String provider, AccessLevel accessLevel, Pageable pageable) {
+//        QItem qItem = QItem.item;
+        QTemplate qTemplate = QTemplate.template;
 
-        BooleanExpression predicate = buildPredicate(name, type, userId, qItem);
+        BooleanExpression predicate = buildPredicate(name, type, provider, accessLevel, qTemplate);
 
         // QueryDSL 쿼리 작성
         var query = queryFactory
-                .selectFrom(qItem)
+                .selectFrom(qTemplate)
                 .where(predicate);
 
         // 페이징 처리
@@ -45,19 +43,23 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         return new PageImpl<>(resultList, pageable, total);
     }
 
-    private BooleanExpression buildPredicate(String name, ItemType type, String provider, QItem qItem) {
-        BooleanExpression predicate = qItem.isDeleted.isFalse(); // 기본적으로 삭제되지 않은 아이템만 조회
+    private BooleanExpression buildPredicate(String name, String type, String provider, AccessLevel accessLevel, QTemplate qTemplate) {
+        BooleanExpression predicate = qTemplate.isDeleted.isFalse();
 
         if (name != null && !name.isEmpty()) {
-            predicate = predicate.and(qItem.name.containsIgnoreCase(name));
+            predicate = predicate.and(qTemplate.name.containsIgnoreCase(name));
         }
 
         if (type != null) {
-            predicate = predicate.and(qItem.type.eq(type));
+            predicate = predicate.and(qTemplate.type.eq(type));
         }
 
         if (provider != null && !provider.isEmpty()) {
-            predicate = predicate.and(qItem.provider.eq(provider)); // User 엔티티와 연결된 부분
+            predicate = predicate.and(qTemplate.provider.eq(provider));
+        }
+
+        if (accessLevel != null) {
+            predicate = predicate.and(qTemplate.accessLevel.eq(accessLevel));
         }
 
         return predicate;

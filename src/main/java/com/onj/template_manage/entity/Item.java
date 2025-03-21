@@ -2,6 +2,7 @@ package com.onj.template_manage.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.AccessLevel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,6 +30,11 @@ public class Item {
     private Date date;
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemOption> itemOptions;
+
+    // Many-to-Many 관계 설정
+    @ManyToMany(mappedBy = "templateItem")
+    private List<Template> templates = new ArrayList<>();  // 여러 템플릿에 포함될 수 있는 아이템들
+
 
     public List<ItemOption> getItemOptions() {
         if (itemOptions == null) {
