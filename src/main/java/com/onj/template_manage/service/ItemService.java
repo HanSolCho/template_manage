@@ -1,6 +1,8 @@
 package com.onj.template_manage.service;
 
+import com.onj.template_manage.DTO.Request.ItemOptionRegisterRequestDTO;
 import com.onj.template_manage.DTO.Request.ItemRegisterRequestDTO;
+import com.onj.template_manage.DTO.Request.ItemSelectRequestDTO;
 import com.onj.template_manage.DTO.Response.SelectedItemResponseDTO;
 import com.onj.template_manage.DTO.Response.SelectedItemResponsePagingDTO;
 import com.onj.template_manage.entity.Item;
@@ -44,9 +46,9 @@ public class ItemService {
         Item isNotTextItem = itemRepository.save(item);
 
         if(!(isNotTextItem.getType() == ItemType.TEXT)) {
-            for(String option : itemRegisterRequestDTO.getOption()) {
+            for(ItemOptionRegisterRequestDTO option : itemRegisterRequestDTO.getOption()) {
                 ItemOption itemOption = ItemOption.builder()
-                        .optionValue(option)
+                        .optionValue(option.getName())
                         .item(isNotTextItem)
                         .build();
                 itemOptionRepository.save(itemOption);
@@ -55,7 +57,20 @@ public class ItemService {
         log.info("item 추가 성공: {}", item.getName());
     }
 
+    public SelectedItemResponsePagingDTO selectItems(ItemSelectRequestDTO itemSelectRequestDTO) {
+        Pageable pageable = PageRequest.of(itemSelectRequestDTO.getPage(), itemSelectRequestDTO.getSize());
 
+        // QueryDSL을 사용하여 필터링된 아이템 조회
+        Page<Item> itemPage = itemRepository.findItemsByFilters(itemSelectRequestDTO.getName(), itemSelectRequestDTO.getType(), itemSelectRequestDTO.getProvider(), pageable);
+
+        // 검색된 데이터를 DTO로 변환
+        List<SelectedItemResponseDTO> selectedItemResponseDTOList = itemPage.stream()
+                .map(SelectedItemResponseDTO::new)
+                .collect(Collectors.toList());
+
+        // 페이징 정보와 함께 반환
+        return new SelectedItemResponsePagingDTO(selectedItemResponseDTOList, itemPage.getNumber(), itemPage.getSize());
+    }
 
 
 

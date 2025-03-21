@@ -3,6 +3,7 @@ package com.onj.template_manage.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,5 +28,12 @@ public class Item {
     @Column(nullable = false)
     private Date date;
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemOption> itemOptions; // 아이템이 checkbox나 dropdown 타입일 경우 선택할 옵션들
+    private List<ItemOption> itemOptions;
+
+    public List<ItemOption> getItemOptions() {
+        if (itemOptions == null) {
+            return new ArrayList<>();  // null 대신 빈 리스트 반환
+        }
+        return itemOptions;
+    }
 }
