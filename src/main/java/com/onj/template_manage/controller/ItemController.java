@@ -8,10 +8,7 @@ import com.onj.template_manage.jwt.JwtToken;
 import com.onj.template_manage.service.ItemService;
 import com.onj.template_manage.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/onj/template-manage/item")
@@ -32,5 +29,11 @@ public class ItemController {
     @PostMapping("/select")
     public ResponseEntity<?> selectItems(@RequestBody ItemSelectRequestDTO itemSelectRequestDTO) {
         return ResponseEntity.ok(itemService.selectItems(itemSelectRequestDTO));
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateItems(@RequestBody ItemRegisterRequestDTO itemRegisterRequestDTO) {
+        itemService.updateItem(itemRegisterRequestDTO);
+        return ResponseEntity.ok().build();
     }
 }

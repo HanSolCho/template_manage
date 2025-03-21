@@ -9,6 +9,8 @@ public enum ErrorCode {
     USER_FAIL_VALIDATE(403, "로그인 정보가 일치하지 않습니다."),
     USER_ALREADY_EXISTS(409, "이미 존재하는 회원 아이디입니다."),
 
+    // 아이템 관련 오류 코드
+    ITEM_NOT_FOUND(404, "등록된 아이템 목록에 존재 하지 않습니다."),
     // 로그인 관련 오류 코드
     INVALID_LOGIN_INFO(401, "잘못된 아이디 또는 비밀번호입니다."),
 

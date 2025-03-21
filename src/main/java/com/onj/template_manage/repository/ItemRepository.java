@@ -13,8 +13,5 @@ import java.util.Optional;
 
 @Repository
 public interface ItemRepository  extends JpaRepository<Item, Long>, ItemRepositoryCustom, QuerydslPredicateExecutor<Item> {
-    Page<Item> findByNameContainingIgnoreCase(String name, Pageable pageable);
-    Page<Item> findByProvider(String provider, Pageable pageable);
-    Page<Item> findByType(ItemType type, Pageable pageable);
-    Page<Item> findByTypeAndName(ItemType type, String name, Pageable pageable);
+    Optional<Item> findByNameContainingIgnoreCase(String name);
 }

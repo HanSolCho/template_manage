@@ -8,6 +8,7 @@ import com.onj.template_manage.DTO.Response.SelectedItemResponsePagingDTO;
 import com.onj.template_manage.entity.Item;
 import com.onj.template_manage.entity.ItemOption;
 import com.onj.template_manage.entity.ItemType;
+import com.onj.template_manage.exception.Item.ItemNotRegisterFromUserException;
 import com.onj.template_manage.repository.ItemOptionRepository;
 import com.onj.template_manage.repository.ItemRepository;
 import lombok.extern.log4j.Log4j2;
@@ -19,8 +20,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,75 +68,51 @@ public class ItemService {
 
         // 검색된 데이터를 DTO로 변환
         List<SelectedItemResponseDTO> selectedItemResponseDTOList = itemPage.stream()
-                .map(SelectedItemResponseDTO::new)
+                .map(item -> {
+                    // ItemType이 TEXT인 경우 옵션 리스트를 비운다.
+                    SelectedItemResponseDTO dto = new SelectedItemResponseDTO(item);
+                    if (item.getType() == ItemType.TEXT) {
+                        dto.setSelectedItemOptionResponseDTOList(new ArrayList<>());  // 빈 리스트로 설정
+                    }
+                    return dto;})
                 .collect(Collectors.toList());
 
         // 페이징 정보와 함께 반환
         return new SelectedItemResponsePagingDTO(selectedItemResponseDTOList, itemPage.getNumber(), itemPage.getSize());
     }
 
+    public void updateItem(ItemRegisterRequestDTO itemRegisterRequestDTO) {
 
+        Optional<Item> item = itemRepository.findByNameContainingIgnoreCase(itemRegisterRequestDTO.getName());
 
-//    public SelectedItemResponsePagingDTO selectAllItem(int page, int size) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Item> itemPage = itemRepository.findAll(pageable);
-//
-//        List<SelectedItemResponseDTO> selectedItemResponsDTOList = itemPage.stream()
-//                .map(SelectedItemResponseDTO::new)
-//                .collect(Collectors.toList());
-//
-//        return new SelectedItemResponsePagingDTO(selectedItemResponsDTOList, itemPage.getNumber(), itemPage.getSize());
-//    }
-//
-//    public SelectedItemResponsePagingDTO selectItemByProvider(String provider,int page, int size){
-//
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Item> itemPage = itemRepository.findByProvider(provider,pageable); // 데이터 조회
-//
-//        List<SelectedItemResponseDTO> selectedItemResponsDTOList = itemPage.stream()
-//                .map(SelectedItemResponseDTO::new)
-//                .collect(Collectors.toList());
-//
-//        return new SelectedItemResponsePagingDTO(selectedItemResponsDTOList, itemPage.getNumber(), itemPage.getSize());
-//    }
-//
-//    //like조회확인
-//    public SelectedItemResponsePagingDTO selectItemByName(String name,int page, int size){
-//
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Item> itemPage = itemRepository.findByNameContainingIgnoreCase(name,pageable); // 데이터 조회
-//
-//        List<SelectedItemResponseDTO> selectedItemResponsDTOList = itemPage.stream()
-//                .map(SelectedItemResponseDTO::new)
-//                .collect(Collectors.toList());
-//
-//        return new SelectedItemResponsePagingDTO(selectedItemResponsDTOList, itemPage.getNumber(), itemPage.getSize());
-//    }
-//
-//    public SelectedItemResponsePagingDTO selectItemByType(ItemType type,int page, int size){
-//
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Item> itemPage = itemRepository.findByType(type,pageable);
-//
-//        List<SelectedItemResponseDTO> selectedItemResponsDTOList = itemPage.stream()
-//                .map(SelectedItemResponseDTO::new)
-//                .collect(Collectors.toList());
-//
-//        return new SelectedItemResponsePagingDTO(selectedItemResponsDTOList, itemPage.getNumber(), itemPage.getSize());
-//    }
-//
-//    public SelectedItemResponsePagingDTO selectItemByTypeAndName(String name, ItemType type,int page, int size){
-//
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Item> itemPage = itemRepository.findByTypeAndName(type,name,pageable);
-//
-//        List<SelectedItemResponseDTO> selectedItemResponsDTOList = itemPage.stream()
-//                .map(SelectedItemResponseDTO::new)
-//                .collect(Collectors.toList());
-//
-//        return new SelectedItemResponsePagingDTO(selectedItemResponsDTOList, itemPage.getNumber(), itemPage.getSize());
-//    }
+        if(item.isPresent() && item.get().getProvider().equals(itemRegisterRequestDTO.getProvider())) {
 
+            if(item.get().getType() == ItemType.TEXT && itemRegisterRequestDTO.getType() != ItemType.TEXT) {
+                Item updateItem = item.get();
+                updateItem.setName(itemRegisterRequestDTO.getName());
+                updateItem.setType(itemRegisterRequestDTO.getType());
 
+                Item updatedItem = itemRepository.save(updateItem);
+                //텍스트 타입이었으나 그외 타입으로 변경 -> 하위옵션 추가 필요
+                for (ItemOptionRegisterRequestDTO option : itemRegisterRequestDTO.getOption()) {
+                    ItemOption itemOption = ItemOption.builder()
+                            .optionValue(option.getName())
+                            .item(updatedItem)
+                            .build();
+                    itemOptionRepository.save(itemOption);
+                }
+            } else{
+                Item updateItem = item.get();
+                updateItem.setName(itemRegisterRequestDTO.getName());
+                updateItem.setType(itemRegisterRequestDTO.getType());
 
+                itemRepository.save(updateItem);
+            }
+
+        } else {
+            //아이템이 없거나 자신의아이템이 아님을 알려주는 익셉션
+            log.error("등록된 Item 존재하지 않습니다.: {}", itemRegisterRequestDTO.getName());
+            throw new ItemNotRegisterFromUserException();
+        }
+    }
 }

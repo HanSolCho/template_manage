@@ -16,10 +16,10 @@ public class ItemOption {
     private Long id;
 
     @Column(nullable = false)
-    private String optionValue; // 옵션 값 (예: '옵션1', '옵션2' 등)
+    private String optionValue;
 
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
-    private Item item; // 연관된 아이템
+    private Item item;
 
 }
