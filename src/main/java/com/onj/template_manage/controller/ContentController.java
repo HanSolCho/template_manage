@@ -27,8 +27,9 @@ public class ContentController {
     }
 
     @GetMapping("/select/all")
-    public ResponseEntity<?> selectContent() {
-        return ResponseEntity.ok(contentService.selectContentList());
+    public ResponseEntity<?> selectContent(@RequestParam(value = "pageIndex", defaultValue = "0") int page,
+                                           @RequestParam(value = "pageSize", defaultValue = "10") int size) {
+        return ResponseEntity.ok(contentService.selectContentList(page,size));
     }
 
     @GetMapping("/select")

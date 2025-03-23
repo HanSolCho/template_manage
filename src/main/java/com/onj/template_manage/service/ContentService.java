@@ -12,6 +12,9 @@ import com.onj.template_manage.repository.TemplateRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -67,17 +71,19 @@ public class ContentService {
 
         log.info("item 추가 성공: {}", content.getName());
     }
+    // 페이징 추가해주자
+    public List<ContentListResponseDTO> selectContentList(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Content> contentPage = contentRepository.findAll(pageable);
 
-    public List<ContentListResponseDTO> selectContentList(){
-        List<Content> contentList = contentRepository.findAll();
-
-        List<ContentListResponseDTO> contentListResponseDTOS = new ArrayList<>();
-        for (Content content : contentList) {
-            ContentListResponseDTO contentListResponseDTO = new ContentListResponseDTO();
-            contentListResponseDTO.setId(content.getId());
-            contentListResponseDTO.setName(content.getName());
-            contentListResponseDTOS.add(contentListResponseDTO);
-        }
+        List<ContentListResponseDTO> contentListResponseDTOS = contentPage.stream()
+                .map(content -> {
+                    ContentListResponseDTO contentListResponseDTO = new ContentListResponseDTO();
+                    contentListResponseDTO.setId(content.getId());
+                    contentListResponseDTO.setName(content.getName());
+                    return contentListResponseDTO;
+                })
+                .collect(Collectors.toList());
         return contentListResponseDTOS;
     }
 
