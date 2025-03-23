@@ -34,4 +34,10 @@ public class ContentController {
     public ResponseEntity<?> selectContent(@RequestParam Long contentId) {
         return ResponseEntity.ok(contentService.selectContent(contentId));
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateContent(@RequestBody ContentRegisterRequestDTO contentRegisterRequestDTO) {
+        contentService.updateContent(contentRegisterRequestDTO);
+        return ResponseEntity.ok().build();
+    }
 }

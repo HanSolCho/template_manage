@@ -9,6 +9,7 @@ import java.util.List;
 
 @Data
 public class ContentRegisterRequestDTO {
+    Long id;
     String name;
     String provider;
     Long templateId;

@@ -21,6 +21,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Log4j2
@@ -54,16 +55,16 @@ public class ContentService {
         contentRepository.save(content);
 
 //        // ContentItemData 처리
-        for (ContentItemDataRegisterRequestDTO contentItemData : contentRegisterRequestDTO.getItemDataList()) {
+        for (ContentItemDataRegisterRequestDTO contentItemDataRegisterRequestDTO : contentRegisterRequestDTO.getItemDataList()) {
             // ContentItemData 객체 저장
             // ITEM의 ID , ITEM의 VALUE
-            Item item = itemRepository.findById(contentItemData.getItemId()).orElse(null);
-            ContentItemData contentItemData1 = ContentItemData.builder()
-                    .itemValue(contentItemData.getValue()) //이값은 text 타입일 경우 입력값, 혹은 checkbox,dropbox의선택한 값이 될것
+            Item item = itemRepository.findById(contentItemDataRegisterRequestDTO.getItemId()).orElse(null);
+            ContentItemData contentItemData = ContentItemData.builder()
+                    .itemValue(contentItemDataRegisterRequestDTO.getValue()) //이값은 text 타입일 경우 입력값, 혹은 checkbox,dropbox의선택한 값이 될것
                     .content(content)
                     .item(item)  // 실제 Item 객체는 그대로 사용
                     .build();
-            contentItemDataRepository.save(contentItemData1);
+            contentItemDataRepository.save(contentItemData);
         }
 
         log.info("item 추가 성공: {}", content.getName());
@@ -125,5 +126,31 @@ public class ContentService {
             log.error("content Id에 해당하는 컨텐츠는 존재하지 않습니다.: {}", contentId);
             throw new ItemNotRegisterFromUserException();
         }
+    }
+
+    public void updateContent(ContentRegisterRequestDTO contentRegisterRequestDTO) {
+
+        Optional<Content> selectTemplate = contentRepository.findById(contentRegisterRequestDTO.getId());
+        // 템플릿을 가져오고 DTO로 변환
+        Template template = templateRepository.findById(contentRegisterRequestDTO.getTemplateId()).orElse(null);
+
+        if (selectTemplate.isPresent() && selectTemplate.get().getProvider().equals(contentRegisterRequestDTO.getProvider())) {
+            Content content = selectTemplate.get();
+            content.setName(contentRegisterRequestDTO.getName());
+            content.setTemplate(template);
+
+            for (ContentItemDataRegisterRequestDTO contentItemDataUpdateRequestDTO : contentRegisterRequestDTO.getItemDataList()) {
+                // ContentItemData 객체 저장
+                // ITEM의 ID , ITEM의 VALUE
+                Item item = itemRepository.findById(contentItemDataUpdateRequestDTO.getItemId()).orElse(null);
+                ContentItemData contentItemData = contentItemDataRepository.findById(contentItemDataUpdateRequestDTO.getItemId()).orElse(null);
+                contentItemData.setItemValue(contentItemDataUpdateRequestDTO.getValue());
+                contentItemData.setContent(content);
+                contentItemData.setItem(item);
+                contentItemDataRepository.save(contentItemData);
+            }
+            contentRepository.save(content);
+        }
+
     }
 }
