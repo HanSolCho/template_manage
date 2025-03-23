@@ -1,5 +1,6 @@
 package com.onj.template_manage.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.AccessLevel;

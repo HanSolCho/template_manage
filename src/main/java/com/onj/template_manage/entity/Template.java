@@ -1,5 +1,8 @@
 package com.onj.template_manage.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,7 +39,7 @@ public class Template {
     private Date date;
 
     // Many-to-Many 관계 설정
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "template_item",  // 중간 테이블 이름
             joinColumns = @JoinColumn(name = "template_id"),  // 템플릿 측 외래키
