@@ -1,6 +1,7 @@
 package com.onj.template_manage.controller;
 
 
+import com.onj.template_manage.DTO.Request.ContentDeleteResponseDTO;
 import com.onj.template_manage.DTO.Request.ContentRegisterRequestDTO;
 import com.onj.template_manage.DTO.Request.ItemRegisterRequestDTO;
 import com.onj.template_manage.service.ContentService;
@@ -38,6 +39,12 @@ public class ContentController {
     @PutMapping("/update")
     public ResponseEntity<?> updateContent(@RequestBody ContentRegisterRequestDTO contentRegisterRequestDTO) {
         contentService.updateContent(contentRegisterRequestDTO);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteContent(@RequestBody ContentDeleteResponseDTO contentDeleteResponseDTO) {
+        contentService.deleteContent(contentDeleteResponseDTO);
         return ResponseEntity.ok().build();
     }
 }

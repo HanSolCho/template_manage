@@ -1,12 +1,10 @@
 package com.onj.template_manage.service;
 
-import com.onj.template_manage.DTO.Request.ContentItemDataRegisterRequestDTO;
-import com.onj.template_manage.DTO.Request.ContentRegisterRequestDTO;
-import com.onj.template_manage.DTO.Request.ItemOptionRegisterRequestDTO;
-import com.onj.template_manage.DTO.Request.ItemRegisterRequestDTO;
+import com.onj.template_manage.DTO.Request.*;
 import com.onj.template_manage.DTO.Response.*;
 import com.onj.template_manage.entity.*;
 import com.onj.template_manage.exception.Item.ItemNotRegisterFromUserException;
+import com.onj.template_manage.exception.content.ContentNotRegisterFromUserException;
 import com.onj.template_manage.repository.ContentItemDataRepository;
 import com.onj.template_manage.repository.ContentRepository;
 import com.onj.template_manage.repository.ItemRepository;
@@ -152,5 +150,16 @@ public class ContentService {
             contentRepository.save(content);
         }
 
+    }
+
+    public void deleteContent(ContentDeleteResponseDTO contentDeleteResponseDTO) {
+        Content content = contentRepository.findById(contentDeleteResponseDTO.getId()).orElse(null);
+
+        if(content != null && content.getProvider().equals(contentDeleteResponseDTO.getProvider())) {
+            contentRepository.delete(content);
+        }
+        else{
+            throw new ContentNotRegisterFromUserException();
+        }
     }
 }
