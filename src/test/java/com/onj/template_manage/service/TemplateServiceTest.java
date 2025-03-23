@@ -6,10 +6,9 @@ import com.onj.template_manage.DTO.Request.TemplateRegisterRequestDTO;
 import com.onj.template_manage.DTO.Request.TemplateSelectRequestDTO;
 import com.onj.template_manage.DTO.Response.SelectedItemResponsePagingDTO;
 import com.onj.template_manage.DTO.Response.SelectedTemplateResponsePagingDTO;
-import com.onj.template_manage.entity.AccessLevel;
-import com.onj.template_manage.entity.Item;
-import com.onj.template_manage.entity.ItemType;
-import com.onj.template_manage.entity.Template;
+import com.onj.template_manage.entity.*;
+import com.onj.template_manage.exception.template.TemplateUseInContentException;
+import com.onj.template_manage.repository.ContentRepository;
 import com.onj.template_manage.repository.ItemOptionRepository;
 import com.onj.template_manage.repository.ItemRepository;
 import com.onj.template_manage.repository.TemplateRepository;
@@ -37,6 +36,8 @@ class TemplateServiceTest {
     private ItemRepository itemRepository;
     @Mock
     private TemplateRepository templateRepository;
+    @Mock
+    private ContentRepository contentRepository;
 
     @InjectMocks
     private TemplateService templateService;
@@ -146,5 +147,52 @@ class TemplateServiceTest {
         assertEquals("template2", result.getTemplateS().get(1).getName());
         assertEquals(templateSelectRequestDTO.getPage(), result.getNumber());
         assertEquals(templateSelectRequestDTO.getSize(), result.getSize());
+    }
+
+    @Test
+    void updateTemplate() {
+        Template template = Template.builder()
+                .id(1L)
+                .name("template1")
+                .type("type1")
+                .provider("provider1")
+                .accessLevel(AccessLevel.PUBLIC)
+                .isDeleted(false)
+                .date(new Date())
+                .templateItem(new ArrayList<>())
+                .build();
+
+        Item item = Item.builder()
+                .id(1L)
+                .name("item1")
+                .type(ItemType.TEXT)
+                .provider("provider1")
+                .isDeleted(false)
+                .date(new Date())
+                .templates(new ArrayList<>())
+                .build();
+
+        TemplateRegisterRequestDTO requestDTO = new TemplateRegisterRequestDTO();
+        requestDTO.setId(1L);
+        requestDTO.setName("updateTemplate");
+        requestDTO.setType("Updated Type");
+        requestDTO.setProvider("provider1");
+        requestDTO.setAccessLevel(AccessLevel.PUBLIC);
+
+        TemplateItemRegisterRequestDTO itemDTO = new TemplateItemRegisterRequestDTO();
+        itemDTO.setItemId(1L);
+        requestDTO.setItem(Collections.singletonList(itemDTO));
+
+        // When
+        when(templateRepository.findById(1L)).thenReturn(Optional.of(template));
+        when(contentRepository.findByTemplateId(1L)).thenReturn(Collections.emptyList());
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
+
+        // 템플릿 업데이트 실행
+        templateService.updateTemplate(requestDTO);
+
+        // Then
+        verify(templateRepository).save(template);
+        verify(itemRepository).save(item);
     }
 }

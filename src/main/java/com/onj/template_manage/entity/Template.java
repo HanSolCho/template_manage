@@ -49,4 +49,5 @@ public class Template {
 
     @Column(nullable = false)
     private Boolean isDeleted = false;  // 소프트 삭제 필드
+
 }

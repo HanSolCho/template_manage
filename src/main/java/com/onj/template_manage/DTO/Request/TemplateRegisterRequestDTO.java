@@ -8,6 +8,7 @@ import java.util.List;
 
 @Data
 public class TemplateRegisterRequestDTO {
+    Long id;
     String name;
     String type;
     AccessLevel accessLevel;

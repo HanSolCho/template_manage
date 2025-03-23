@@ -12,7 +12,9 @@ public enum ErrorCode {
     // 아이템 관련 오류 코드
     ITEM_NOT_FOUND(404, "등록할 아이템 목록이 존재 하지 않습니다."),
     ITEM_OPTION_IS_NULL(404, "아이템 옵션 값이 존재하지 않습니다."),
-
+    // 템플릿 관련 오류
+    TEMPLATE_USING_CONTENT(422 , "해당 Template은 현재 사용중인 Content가 존재합니다."),
+    TEMPLATE_NOT_FOUND(404, "등록된 템플릿이 존재 하지 않습니다."),
     // 콘텐츠 관련 오류
     CONTENT_NOT_FOUND(404, "등록된 컨텐츠가 존재 하지 않습니다."),
 
