@@ -55,11 +55,14 @@ public class TemplateRepositoryCustomImpl implements TemplateRepositoryCustom {
         }
 
         if (provider != null && !provider.isEmpty()) {
-            predicate = predicate.and(qTemplate.provider.eq(provider));
-        }
-
-        if (accessLevel != null) {
-            predicate = predicate.and(qTemplate.accessLevel.eq(accessLevel));
+            // provider가 일치하는 경우는 PRIVATE과 PUBLIC을 모두 포함
+            predicate = predicate.and(
+                    qTemplate.provider.eq(provider)
+                            .or(qTemplate.accessLevel.eq(AccessLevel.PUBLIC))
+            );
+        } else {
+            // provider가 없으면 PUBLIC 템플릿만 포함
+            predicate = predicate.and(qTemplate.accessLevel.eq(AccessLevel.PUBLIC));
         }
 
         return predicate;
