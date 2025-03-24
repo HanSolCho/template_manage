@@ -35,7 +35,7 @@ public class TemplateController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/select")
+    @PostMapping("/select") //최종 응답값에 ItemOption 추가 여부 고민
     @Operation(summary = "템플릿 조회", responses = {
             @ApiResponse(responseCode = "200",
                     description = "컨텐츠 조회 성공",
