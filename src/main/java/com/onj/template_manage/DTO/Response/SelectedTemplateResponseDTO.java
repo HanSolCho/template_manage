@@ -26,8 +26,6 @@ public class SelectedTemplateResponseDTO {
         this.type = template.getType();
         this.date = template.getDate();
         this.provider = template.getProvider();
-        // templateItem을 TemplateItemDTO 리스트로 변환 (아이템 id만 포함)
-        // null 체크 후 빈 리스트로 설정
         this.templateItem = (template.getTemplateItem() == null)
                 ? new ArrayList<>()
                 : template.getTemplateItem().stream()
