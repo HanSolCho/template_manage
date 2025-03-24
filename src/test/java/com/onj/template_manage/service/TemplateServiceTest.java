@@ -1,9 +1,6 @@
 package com.onj.template_manage.service;
 
-import com.onj.template_manage.DTO.Request.ItemSelectRequestDTO;
-import com.onj.template_manage.DTO.Request.TemplateItemRegisterRequestDTO;
-import com.onj.template_manage.DTO.Request.TemplateRegisterRequestDTO;
-import com.onj.template_manage.DTO.Request.TemplateSelectRequestDTO;
+import com.onj.template_manage.DTO.Request.*;
 import com.onj.template_manage.DTO.Response.SelectedItemResponsePagingDTO;
 import com.onj.template_manage.DTO.Response.SelectedTemplateResponsePagingDTO;
 import com.onj.template_manage.entity.*;
@@ -195,4 +192,32 @@ class TemplateServiceTest {
         verify(templateRepository).save(template);
         verify(itemRepository).save(item);
     }
+
+    @Test
+    void softDeleteTemplate() {
+        // Given
+        Long templateId = 1L;
+        String provider = "provider1";
+
+        TemplateDeleteRequsetDTO templateDeleteRequsetDTO = new TemplateDeleteRequsetDTO();
+        templateDeleteRequsetDTO.setId(templateId);
+        templateDeleteRequsetDTO.setProvider(provider);
+
+        Template template = Template.builder()
+                .id(templateId)
+                .name("template1")
+                .provider(provider)
+                .isDeleted(false)
+                .build();
+
+        when(templateRepository.findById(templateId)).thenReturn(Optional.of(template));
+
+        // When
+        templateService.softDeleteTemplate(templateDeleteRequsetDTO);
+
+        // Then
+        assertTrue(template.getIsDeleted());
+        verify(templateRepository).save(template);
+    }
+
 }

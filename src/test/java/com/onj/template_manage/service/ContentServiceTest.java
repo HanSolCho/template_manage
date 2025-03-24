@@ -1,7 +1,9 @@
 package com.onj.template_manage.service;
 
+import com.onj.template_manage.DTO.Request.ContentDeleteResponseDTO;
 import com.onj.template_manage.DTO.Request.ContentItemDataRegisterRequestDTO;
 import com.onj.template_manage.DTO.Request.ContentRegisterRequestDTO;
+import com.onj.template_manage.DTO.Response.ContentListResponseDTO;
 import com.onj.template_manage.DTO.Response.ContentSelectResponseDTO;
 import com.onj.template_manage.entity.*;
 import com.onj.template_manage.repository.*;
@@ -11,12 +13,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -93,6 +95,40 @@ class ContentServiceTest {
         // Then: 결과 확인
         verify(contentRepository, times(1)).save(any(Content.class));
         verify(contentItemDataRepository, times(1)).save(any(ContentItemData.class));
+    }
+
+    @Test
+    void selectContentList() {
+        // Given
+        int page = 0;
+        int size = 1;
+
+        Content content = Content.builder()
+                .id(1L)
+                .name("content1")
+                .template(new Template())
+                .itemDataList(new ArrayList<>())
+                .build();
+
+        Content content2 = Content.builder()
+                .id(2L)
+                .name("content2")
+                .template(new Template())
+                .itemDataList(new ArrayList<>())
+                .build();
+
+        Page<Content> contentPage = new PageImpl<>(Arrays.asList(content, content2));
+
+        when(contentRepository.findAll(PageRequest.of(page, size))).thenReturn(contentPage);
+
+        // When
+        List<ContentListResponseDTO> result = contentService.selectContentList(page, size);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("content1", result.get(0).getName());
+        assertEquals("content2", result.get(1).getName());
     }
 
     @Test
@@ -209,5 +245,32 @@ class ContentServiceTest {
         // Then
         verify(contentRepository).save(content); // Content 객체 저장을 확인
         verify(contentItemDataRepository).save(contentItemData); // ContentItemData 객체 저장을 확인
+    }
+
+    @Test
+    void deleteContent() {
+        // Given
+        Long contentId = 1L;
+        String provider = "provider1";
+
+        ContentDeleteResponseDTO contentDeleteResponseDTO = new ContentDeleteResponseDTO();
+        contentDeleteResponseDTO.setId(contentId);
+        contentDeleteResponseDTO.setProvider(provider);
+
+        Content content = Content.builder()
+                .id(contentId)
+                .name("content1")
+                .template(new Template())
+                .date(new Date())
+                .provider("provider1")
+                .build();
+
+        when(contentRepository.findById(contentId)).thenReturn(Optional.of(content));
+
+        // When
+        contentService.deleteContent(contentDeleteResponseDTO);
+
+        // Then
+        verify(contentRepository).delete(content);
     }
 }

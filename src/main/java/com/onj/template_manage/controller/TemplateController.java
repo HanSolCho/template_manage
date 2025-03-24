@@ -37,7 +37,7 @@ public class TemplateController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/delete")
+    @PutMapping("/delete")
     public ResponseEntity<?> deleteTemplate(@RequestBody TemplateDeleteRequsetDTO templateRegisterRequestDTO) {
         templateService.softDeleteTemplate(templateRegisterRequestDTO);
         return ResponseEntity.ok().build();

@@ -13,5 +13,5 @@ import java.util.Optional;
 
 @Repository
 public interface ItemRepository  extends JpaRepository<Item, Long>, ItemRepositoryCustom, QuerydslPredicateExecutor<Item> {
-    Optional<Item> findByName(String name);
+
 }

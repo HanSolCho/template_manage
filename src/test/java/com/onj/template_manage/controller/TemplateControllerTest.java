@@ -2,10 +2,7 @@ package com.onj.template_manage.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.onj.template_manage.DTO.Request.ItemRegisterRequestDTO;
-import com.onj.template_manage.DTO.Request.ItemSelectRequestDTO;
-import com.onj.template_manage.DTO.Request.TemplateRegisterRequestDTO;
-import com.onj.template_manage.DTO.Request.TemplateSelectRequestDTO;
+import com.onj.template_manage.DTO.Request.*;
 import com.onj.template_manage.config.TestSecurityConfig;
 import com.onj.template_manage.entity.AccessLevel;
 import com.onj.template_manage.entity.ItemType;
@@ -26,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -78,5 +76,42 @@ class TemplateControllerTest {
                 .andExpect(status().isOk());
 
         verify(templateService, times(1)).selectTemplate(templateSelectRequestDTO);
+    }
+
+    @Test
+    void updateTemplate() throws Exception {
+
+        //given
+        TemplateRegisterRequestDTO templateRegisterRequestDTO = new TemplateRegisterRequestDTO();
+        templateRegisterRequestDTO.setName("template1");
+        templateRegisterRequestDTO.setType("type1");
+        templateRegisterRequestDTO.setProvider("provider1");
+        templateRegisterRequestDTO.setAccessLevel(AccessLevel.PUBLIC);
+        templateRegisterRequestDTO.setItem(new ArrayList<>());
+
+        //when & then: 예상되는 결과 검증
+        mockMvc.perform(put("/onj/template-manage/template/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(templateRegisterRequestDTO)))
+                .andExpect(status().isOk());
+
+        verify(templateService, times(1)).updateTemplate(templateRegisterRequestDTO);
+    }
+
+    @Test
+    void softDeleteTemplate() throws Exception {
+
+        //given
+        TemplateDeleteRequsetDTO templateDeleteRequsetDTO = new TemplateDeleteRequsetDTO();
+        templateDeleteRequsetDTO.setId(1L);
+        templateDeleteRequsetDTO.setProvider("provider1");
+
+        //when & then: 예상되는 결과 검증
+        mockMvc.perform(put("/onj/template-manage/template/delete")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(templateDeleteRequsetDTO)))
+                .andExpect(status().isOk());
+
+        verify(templateService, times(1)).softDeleteTemplate(templateDeleteRequsetDTO);
     }
 }
