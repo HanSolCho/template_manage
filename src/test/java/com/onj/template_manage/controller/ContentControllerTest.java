@@ -1,11 +1,9 @@
 package com.onj.template_manage.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.onj.template_manage.DTO.Request.ContentDeleteResponseDTO;
+import com.onj.template_manage.DTO.Request.ContentDeleteRequestDTO;
 import com.onj.template_manage.DTO.Request.ContentRegisterRequestDTO;
-import com.onj.template_manage.DTO.Request.ItemRegisterRequestDTO;
 import com.onj.template_manage.config.TestSecurityConfig;
-import com.onj.template_manage.entity.ItemType;
 import com.onj.template_manage.service.ContentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -104,16 +101,16 @@ class ContentControllerTest {
     @Test
     void deleteContent() throws Exception {
         //given
-        ContentDeleteResponseDTO contentDeleteResponseDTO =  new ContentDeleteResponseDTO();
-        contentDeleteResponseDTO.setId(1L);
-        contentDeleteResponseDTO.setProvider("provider1");
+        ContentDeleteRequestDTO contentDeleteRequestDTO =  new ContentDeleteRequestDTO();
+        contentDeleteRequestDTO.setId(1L);
+        contentDeleteRequestDTO.setProvider("provider1");
 
         //when & then: 예상되는 결과 검증
         mockMvc.perform(delete("/onj/template-manage/content/delete")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(contentDeleteResponseDTO)))
+                        .content(new ObjectMapper().writeValueAsString(contentDeleteRequestDTO)))
                 .andExpect(status().isOk());
 
-        verify(contentService, times(1)).deleteContent(contentDeleteResponseDTO);
+        verify(contentService, times(1)).deleteContent(contentDeleteRequestDTO);
     }
 }

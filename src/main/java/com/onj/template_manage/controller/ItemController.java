@@ -3,8 +3,13 @@ package com.onj.template_manage.controller;
 import com.onj.template_manage.DTO.Request.ItemDeleteRequestDTO;
 import com.onj.template_manage.DTO.Request.ItemRegisterRequestDTO;
 import com.onj.template_manage.DTO.Request.ItemSelectRequestDTO;
+import com.onj.template_manage.DTO.Response.ContentSelectResponseDTO;
+import com.onj.template_manage.DTO.Response.SelectedItemResponsePagingDTO;
 import com.onj.template_manage.service.ItemService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +33,12 @@ public class ItemController {
     }
 
     @PostMapping("/select")
-    @Operation(summary = "아이템 조회")
+    @Operation(summary = "아이템 조회", responses = {
+            @ApiResponse(responseCode = "200",
+                    description = "컨텐츠 조회 성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = SelectedItemResponsePagingDTO.class)))
+    })
     public ResponseEntity<?> selectItems(@RequestBody ItemSelectRequestDTO itemSelectRequestDTO) {
         return ResponseEntity.ok(itemService.selectItems(itemSelectRequestDTO));
     }

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Schema(description = "컨텐츠 삭제 요청 DTO")
-public class ContentDeleteResponseDTO {
+public class ContentDeleteRequestDTO {
     @Schema(description = "컨텐츠 ID", example = "1")
     Long id;
     @Schema(description = "현재 요청한 유저 ID", example = "user1")

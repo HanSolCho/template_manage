@@ -158,10 +158,10 @@ public class ContentService {
 
     }
 
-    public void deleteContent(ContentDeleteResponseDTO contentDeleteResponseDTO) {
-        Content content = contentRepository.findById(contentDeleteResponseDTO.getId()).orElse(null);
+    public void deleteContent(ContentDeleteRequestDTO contentDeleteRequestDTO) {
+        Content content = contentRepository.findById(contentDeleteRequestDTO.getId()).orElse(null);
 
-        if(content != null && content.getProvider().equals(contentDeleteResponseDTO.getProvider())) {
+        if(content != null && content.getProvider().equals(contentDeleteRequestDTO.getProvider())) {
             contentRepository.delete(content);
         }
         else{

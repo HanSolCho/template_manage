@@ -1,6 +1,6 @@
 package com.onj.template_manage.service;
 
-import com.onj.template_manage.DTO.Request.ContentDeleteResponseDTO;
+import com.onj.template_manage.DTO.Request.ContentDeleteRequestDTO;
 import com.onj.template_manage.DTO.Request.ContentItemDataRegisterRequestDTO;
 import com.onj.template_manage.DTO.Request.ContentRegisterRequestDTO;
 import com.onj.template_manage.DTO.Response.ContentListResponseDTO;
@@ -253,9 +253,9 @@ class ContentServiceTest {
         Long contentId = 1L;
         String provider = "provider1";
 
-        ContentDeleteResponseDTO contentDeleteResponseDTO = new ContentDeleteResponseDTO();
-        contentDeleteResponseDTO.setId(contentId);
-        contentDeleteResponseDTO.setProvider(provider);
+        ContentDeleteRequestDTO contentDeleteRequestDTO = new ContentDeleteRequestDTO();
+        contentDeleteRequestDTO.setId(contentId);
+        contentDeleteRequestDTO.setProvider(provider);
 
         Content content = Content.builder()
                 .id(contentId)
@@ -268,7 +268,7 @@ class ContentServiceTest {
         when(contentRepository.findById(contentId)).thenReturn(Optional.of(content));
 
         // When
-        contentService.deleteContent(contentDeleteResponseDTO);
+        contentService.deleteContent(contentDeleteRequestDTO);
 
         // Then
         verify(contentRepository).delete(content);

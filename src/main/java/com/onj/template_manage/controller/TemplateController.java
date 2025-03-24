@@ -1,9 +1,14 @@
 package com.onj.template_manage.controller;
 
 import com.onj.template_manage.DTO.Request.*;
+import com.onj.template_manage.DTO.Response.SelectedItemResponsePagingDTO;
+import com.onj.template_manage.DTO.Response.SelectedTemplateResponsePagingDTO;
 import com.onj.template_manage.service.ItemService;
 import com.onj.template_manage.service.TemplateService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.experimental.Delegate;
 import lombok.extern.log4j.Log4j2;
@@ -30,8 +35,13 @@ public class TemplateController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/select") //결과값에 Item의 id가 담기는데 그걸 토대로 Item의 정보를 추출해올수있도록
-    @Operation(summary = "템플릿 조회")// 수정
+    @PostMapping("/select")
+    @Operation(summary = "템플릿 조회", responses = {
+            @ApiResponse(responseCode = "200",
+                    description = "컨텐츠 조회 성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = SelectedTemplateResponsePagingDTO.class)))
+    })// 수정
     public ResponseEntity<?> selectTemplate(@RequestBody TemplateSelectRequestDTO templateSelectRequestDTO) {
         return ResponseEntity.ok(templateService.selectTemplate(templateSelectRequestDTO));
     }

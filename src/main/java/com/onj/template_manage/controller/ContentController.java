@@ -1,13 +1,16 @@
 package com.onj.template_manage.controller;
 
 
-import com.onj.template_manage.DTO.Request.ContentDeleteResponseDTO;
+import com.onj.template_manage.DTO.Request.ContentDeleteRequestDTO;
 import com.onj.template_manage.DTO.Request.ContentRegisterRequestDTO;
-import com.onj.template_manage.DTO.Request.ItemRegisterRequestDTO;
+import com.onj.template_manage.DTO.Response.ContentListResponseDTO;
+import com.onj.template_manage.DTO.Response.ContentSelectResponseDTO;
 import com.onj.template_manage.service.ContentService;
-import com.onj.template_manage.service.ItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +35,12 @@ public class ContentController {
     }
 
     @GetMapping("/select/all")
-    @Operation(summary = "전체 컨텐츠 리스트 조회")
+    @Operation(summary = "전체 컨텐츠 리스트 조회", responses = {
+            @ApiResponse(responseCode = "200",
+                    description = "컨텐츠 조회 성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ContentListResponseDTO.class)))
+    })
     public ResponseEntity<?> selectContent(@Parameter(description = "페이지 번호", example = "0")
                                            @RequestParam(value = "pageIndex", defaultValue = "0") int page,
                                            @Parameter(description = "페이지 크기(한 페이지당 항목 수)", example = "10")
@@ -41,7 +49,12 @@ public class ContentController {
     }
 
     @GetMapping("/select")
-    @Operation(summary = "컨텐츠 정보 조회")
+    @Operation(summary = "컨텐츠 정보 조회", responses = {
+            @ApiResponse(responseCode = "200",
+                    description = "컨텐츠 조회 성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ContentSelectResponseDTO.class)))
+    })
     public ResponseEntity<?> selectContent(@Parameter(description = "컨텐츠 ID", example = "1")
                                            @RequestParam Long contentId) {
         return ResponseEntity.ok(contentService.selectContent(contentId));
@@ -56,8 +69,8 @@ public class ContentController {
 
     @DeleteMapping("/delete")
     @Operation(summary = "컨텐츠 삭제")
-    public ResponseEntity<?> deleteContent(@RequestBody ContentDeleteResponseDTO contentDeleteResponseDTO) {
-        contentService.deleteContent(contentDeleteResponseDTO);
+    public ResponseEntity<?> deleteContent(@RequestBody ContentDeleteRequestDTO contentDeleteRequestDTO) {
+        contentService.deleteContent(contentDeleteRequestDTO);
         return ResponseEntity.ok().build();
     }
 }
