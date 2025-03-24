@@ -1,12 +1,14 @@
 package com.onj.template_manage.service;
 
-import com.onj.template_manage.DTO.Request.*;
-import com.onj.template_manage.DTO.Response.*;
+import com.onj.template_manage.DTO.Request.template.TemplateDeleteRequsetDTO;
+import com.onj.template_manage.DTO.Request.template.TemplateItemRegisterRequestDTO;
+import com.onj.template_manage.DTO.Request.template.TemplateRegisterRequestDTO;
+import com.onj.template_manage.DTO.Request.template.TemplateSelectRequestDTO;
+import com.onj.template_manage.DTO.Response.template.SelectedTemplateResponseDTO;
+import com.onj.template_manage.DTO.Response.template.SelectedTemplateResponsePagingDTO;
 import com.onj.template_manage.entity.Content;
 import com.onj.template_manage.entity.Item;
-import com.onj.template_manage.entity.ItemOption;
 import com.onj.template_manage.entity.Template;
-import com.onj.template_manage.exception.Item.ItemNotRegisterFromUserException;
 import com.onj.template_manage.exception.Item.ItemOptionIsNullException;
 import com.onj.template_manage.exception.template.TemplateNotRegisterFromUserException;
 import com.onj.template_manage.exception.template.TemplateUseInContentException;

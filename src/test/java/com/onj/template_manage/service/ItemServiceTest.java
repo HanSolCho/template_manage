@@ -1,14 +1,13 @@
 package com.onj.template_manage.service;
 
-import com.onj.template_manage.DTO.Request.ItemDeleteRequestDTO;
-import com.onj.template_manage.DTO.Request.ItemOptionRegisterRequestDTO;
-import com.onj.template_manage.DTO.Request.ItemRegisterRequestDTO;
-import com.onj.template_manage.DTO.Request.ItemSelectRequestDTO;
-import com.onj.template_manage.DTO.Response.SelectedItemResponsePagingDTO;
+import com.onj.template_manage.DTO.Request.item.ItemDeleteRequestDTO;
+import com.onj.template_manage.DTO.Request.item.ItemOptionRegisterRequestDTO;
+import com.onj.template_manage.DTO.Request.item.ItemRegisterRequestDTO;
+import com.onj.template_manage.DTO.Request.item.ItemSelectRequestDTO;
+import com.onj.template_manage.DTO.Response.Item.SelectedItemResponsePagingDTO;
 import com.onj.template_manage.entity.Item;
 import com.onj.template_manage.entity.ItemOption;
 import com.onj.template_manage.entity.ItemType;
-import com.onj.template_manage.entity.User;
 import com.onj.template_manage.exception.Item.ItemNotRegisterFromUserException;
 import com.onj.template_manage.repository.ItemOptionRepository;
 import com.onj.template_manage.repository.ItemRepository;
@@ -18,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;

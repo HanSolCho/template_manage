@@ -1,8 +1,8 @@
 package com.onj.template_manage.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.onj.template_manage.DTO.Request.UserSignUpRequestDTO;
-import com.onj.template_manage.DTO.Request.UserUpdateRequestDTO;
+import com.onj.template_manage.DTO.Request.user.UserSignUpRequestDTO;
+import com.onj.template_manage.DTO.Request.user.UserUpdateRequestDTO;
 import com.onj.template_manage.config.TestSecurityConfig;
 import com.onj.template_manage.service.UserService;
 import org.junit.jupiter.api.Test;

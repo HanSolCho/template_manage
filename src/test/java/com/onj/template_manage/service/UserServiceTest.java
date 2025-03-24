@@ -1,11 +1,10 @@
 package com.onj.template_manage.service;
 
-import com.onj.template_manage.DTO.Request.UserSignUpRequestDTO;
-import com.onj.template_manage.DTO.Response.UserSelectResponseDTO;
+import com.onj.template_manage.DTO.Request.user.UserSignUpRequestDTO;
+import com.onj.template_manage.DTO.Response.user.UserSelectResponseDTO;
 import com.onj.template_manage.entity.User;
-import com.onj.template_manage.exception.User.UserAlreadyExistsException;
-import com.onj.template_manage.exception.User.UserNotFoundException;
-import com.onj.template_manage.jwt.JwtToken;
+import com.onj.template_manage.exception.user.UserAlreadyExistsException;
+import com.onj.template_manage.exception.user.UserNotFoundException;
 import com.onj.template_manage.jwt.JwtTokenProvider;
 import com.onj.template_manage.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,9 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 

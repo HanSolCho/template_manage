@@ -1,12 +1,12 @@
 package com.onj.template_manage.service;
 
-import com.onj.template_manage.DTO.Request.*;
-import com.onj.template_manage.DTO.Response.SelectedItemResponsePagingDTO;
-import com.onj.template_manage.DTO.Response.SelectedTemplateResponsePagingDTO;
+import com.onj.template_manage.DTO.Request.template.TemplateDeleteRequsetDTO;
+import com.onj.template_manage.DTO.Request.template.TemplateItemRegisterRequestDTO;
+import com.onj.template_manage.DTO.Request.template.TemplateRegisterRequestDTO;
+import com.onj.template_manage.DTO.Request.template.TemplateSelectRequestDTO;
+import com.onj.template_manage.DTO.Response.template.SelectedTemplateResponsePagingDTO;
 import com.onj.template_manage.entity.*;
-import com.onj.template_manage.exception.template.TemplateUseInContentException;
 import com.onj.template_manage.repository.ContentRepository;
-import com.onj.template_manage.repository.ItemOptionRepository;
 import com.onj.template_manage.repository.ItemRepository;
 import com.onj.template_manage.repository.TemplateRepository;
 import org.junit.jupiter.api.BeforeEach;

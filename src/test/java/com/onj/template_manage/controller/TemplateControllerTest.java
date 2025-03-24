@@ -1,12 +1,11 @@
 package com.onj.template_manage.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.onj.template_manage.DTO.Request.*;
+import com.onj.template_manage.DTO.Request.template.TemplateDeleteRequsetDTO;
+import com.onj.template_manage.DTO.Request.template.TemplateRegisterRequestDTO;
+import com.onj.template_manage.DTO.Request.template.TemplateSelectRequestDTO;
 import com.onj.template_manage.config.TestSecurityConfig;
 import com.onj.template_manage.entity.AccessLevel;
-import com.onj.template_manage.entity.ItemType;
-import com.onj.template_manage.service.ItemService;
 import com.onj.template_manage.service.TemplateService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

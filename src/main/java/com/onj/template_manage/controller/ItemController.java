@@ -1,10 +1,9 @@
 package com.onj.template_manage.controller;
 
-import com.onj.template_manage.DTO.Request.ItemDeleteRequestDTO;
-import com.onj.template_manage.DTO.Request.ItemRegisterRequestDTO;
-import com.onj.template_manage.DTO.Request.ItemSelectRequestDTO;
-import com.onj.template_manage.DTO.Response.ContentSelectResponseDTO;
-import com.onj.template_manage.DTO.Response.SelectedItemResponsePagingDTO;
+import com.onj.template_manage.DTO.Request.item.ItemDeleteRequestDTO;
+import com.onj.template_manage.DTO.Request.item.ItemRegisterRequestDTO;
+import com.onj.template_manage.DTO.Request.item.ItemSelectRequestDTO;
+import com.onj.template_manage.DTO.Response.Item.SelectedItemResponsePagingDTO;
 import com.onj.template_manage.service.ItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

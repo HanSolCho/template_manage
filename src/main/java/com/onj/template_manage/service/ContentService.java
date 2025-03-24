@@ -1,7 +1,9 @@
 package com.onj.template_manage.service;
 
-import com.onj.template_manage.DTO.Request.*;
-import com.onj.template_manage.DTO.Response.*;
+import com.onj.template_manage.DTO.Request.content.ContentDeleteRequestDTO;
+import com.onj.template_manage.DTO.Request.content.ContentItemDataRegisterRequestDTO;
+import com.onj.template_manage.DTO.Request.content.ContentRegisterRequestDTO;
+import com.onj.template_manage.DTO.Response.content.*;
 import com.onj.template_manage.entity.*;
 import com.onj.template_manage.exception.Item.ItemNotRegisterFromUserException;
 import com.onj.template_manage.exception.content.ContentNotRegisterFromUserException;

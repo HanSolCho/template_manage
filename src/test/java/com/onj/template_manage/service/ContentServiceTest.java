@@ -1,10 +1,10 @@
 package com.onj.template_manage.service;
 
-import com.onj.template_manage.DTO.Request.ContentDeleteRequestDTO;
-import com.onj.template_manage.DTO.Request.ContentItemDataRegisterRequestDTO;
-import com.onj.template_manage.DTO.Request.ContentRegisterRequestDTO;
-import com.onj.template_manage.DTO.Response.ContentListResponseDTO;
-import com.onj.template_manage.DTO.Response.ContentSelectResponseDTO;
+import com.onj.template_manage.DTO.Request.content.ContentDeleteRequestDTO;
+import com.onj.template_manage.DTO.Request.content.ContentItemDataRegisterRequestDTO;
+import com.onj.template_manage.DTO.Request.content.ContentRegisterRequestDTO;
+import com.onj.template_manage.DTO.Response.content.ContentListResponseDTO;
+import com.onj.template_manage.DTO.Response.content.ContentSelectResponseDTO;
 import com.onj.template_manage.entity.*;
 import com.onj.template_manage.repository.*;
 import org.junit.jupiter.api.BeforeEach;

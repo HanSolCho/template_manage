@@ -1,12 +1,12 @@
 package com.onj.template_manage.service;
 
-import com.onj.template_manage.DTO.Request.UserSignUpRequestDTO;
-import com.onj.template_manage.DTO.Request.UserUpdateRequestDTO;
-import com.onj.template_manage.DTO.Response.UserSelectResponseDTO;
+import com.onj.template_manage.DTO.Request.user.UserSignUpRequestDTO;
+import com.onj.template_manage.DTO.Request.user.UserUpdateRequestDTO;
+import com.onj.template_manage.DTO.Response.user.UserSelectResponseDTO;
 import com.onj.template_manage.entity.User;
-import com.onj.template_manage.exception.User.UserAlreadyExistsException;
-import com.onj.template_manage.exception.User.UserNotFoundException;
-import com.onj.template_manage.exception.User.UserNotValidatePasswordException;
+import com.onj.template_manage.exception.user.UserAlreadyExistsException;
+import com.onj.template_manage.exception.user.UserNotFoundException;
+import com.onj.template_manage.exception.user.UserNotValidatePasswordException;
 import com.onj.template_manage.jwt.JwtToken;
 import com.onj.template_manage.jwt.JwtTokenProvider;
 import com.onj.template_manage.repository.UserRepository;
@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;

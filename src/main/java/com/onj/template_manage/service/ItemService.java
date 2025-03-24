@@ -1,12 +1,12 @@
 package com.onj.template_manage.service;
 
-import com.onj.template_manage.DTO.Request.ItemDeleteRequestDTO;
-import com.onj.template_manage.DTO.Request.ItemOptionRegisterRequestDTO;
-import com.onj.template_manage.DTO.Request.ItemRegisterRequestDTO;
-import com.onj.template_manage.DTO.Request.ItemSelectRequestDTO;
-import com.onj.template_manage.DTO.Response.SelectedItemOptionResponseDTO;
-import com.onj.template_manage.DTO.Response.SelectedItemResponseDTO;
-import com.onj.template_manage.DTO.Response.SelectedItemResponsePagingDTO;
+import com.onj.template_manage.DTO.Request.item.ItemDeleteRequestDTO;
+import com.onj.template_manage.DTO.Request.item.ItemOptionRegisterRequestDTO;
+import com.onj.template_manage.DTO.Request.item.ItemRegisterRequestDTO;
+import com.onj.template_manage.DTO.Request.item.ItemSelectRequestDTO;
+import com.onj.template_manage.DTO.Response.Item.SelectedItemOptionResponseDTO;
+import com.onj.template_manage.DTO.Response.Item.SelectedItemResponseDTO;
+import com.onj.template_manage.DTO.Response.Item.SelectedItemResponsePagingDTO;
 import com.onj.template_manage.entity.Item;
 import com.onj.template_manage.entity.ItemOption;
 import com.onj.template_manage.entity.ItemType;
@@ -16,7 +16,6 @@ import com.onj.template_manage.repository.ItemOptionRepository;
 import com.onj.template_manage.repository.ItemRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
-import org.h2.api.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,13 +24,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static com.onj.template_manage.exception.ErrorCode.ITEM_OPTION_IS_NULL;
 
 @Service
 @Log4j2
