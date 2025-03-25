@@ -35,7 +35,10 @@ public class TemplateItemDTO {
         this.provider = item.getProvider();
         this.isDeleted = item.getIsDeleted();
         this.date = item.getDate();
-        this.selectedItemOptionResponseDTOList = item.getItemOptions().stream().map(SelectedItemOptionResponseDTO::new).collect(Collectors.toList());
+        this.selectedItemOptionResponseDTOList = item.getItemOptions().stream()
+                .filter(itemOption -> !itemOption.getIsDeleted())
+                .map(SelectedItemOptionResponseDTO::new)
+                .collect(Collectors.toList());
 
     }
 }

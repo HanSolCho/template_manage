@@ -17,7 +17,7 @@ public class ContentRegisterRequestDTO {
     @Schema(description = "선택 템플릿 ID", example = "1")
     Long templateId;
     @Schema(description = "선택 아이템 값, 템플릿에 속한 아이템의 값으로 TEXT 타입의 경우 입력값, 그외 타입의 경우 등록된 옵션 값중 선택 값"
-            , example = "\"itemDataList\": [\n" +
+            , example = "[\n" +
             "    {\n" +
             "      \"itemId\": 1,\n" +
             "      \"value\": \"text typing\"\n" +

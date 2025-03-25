@@ -20,13 +20,13 @@ public class TemplateRegisterRequestDTO {
     AccessLevel accessLevel;
     @Schema(description = "템플릿 등록 유저", example = "provider1")
     String provider;
-    @Schema(description = "템플릿에 사용되는 Item id 목록", example = "\"item\": [\n" +
-            "        {\n" +
-            "            \"itemId\": 1\n" +
-            "        },\n" +
-            "        {\n" +
-            "            \"itemId\": 2\n" +
-            "        }\n" +
-            "    ]")
+    @Schema(description = "템플릿에 사용되는 Item id 목록", example = "[\n" +
+            "  {\n" +
+            "    \"itemId\": 1\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"itemId\": 2\n" +
+            "  }\n" +
+            "]")
     List<TemplateItemRegisterRequestDTO> item;
 }

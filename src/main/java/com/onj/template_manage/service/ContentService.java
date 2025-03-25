@@ -106,21 +106,16 @@ public class ContentService {
             //titem =  template.getTemplateItem()
             List<ContentSelectItemResponseDTO> contentItemResponseDTOList = new ArrayList<>();
             for (Item item : template.getTemplateItem()) {
-                ContentSelectItemResponseDTO contentSelectItemResponseDTO = new ContentSelectItemResponseDTO();
+                ContentSelectItemResponseDTO contentSelectItemResponseDTO = new ContentSelectItemResponseDTO(item);
                 contentSelectItemResponseDTO.setId(item.getId());
                 contentSelectItemResponseDTO.setName(item.getName());
                 contentSelectItemResponseDTO.setType(item.getType());
                 contentSelectItemResponseDTO.setProvider(item.getProvider());
-                contentItemResponseDTOList.add(contentSelectItemResponseDTO);
 
-                List<ContentSelectItemOptionResponseDTO> contentItemOptionResponseDTOList = new ArrayList<>();
-                for(ItemOption itemOption : item.getItemOptions()) {
-                    ContentSelectItemOptionResponseDTO contentItemOptionResponseDTO = new ContentSelectItemOptionResponseDTO();
-                    contentItemOptionResponseDTO.setId(itemOption.getId());
-                    contentItemOptionResponseDTO.setOptionValue(itemOption.getOptionValue());
-                    contentItemOptionResponseDTOList.add(contentItemOptionResponseDTO);
-                }
-                contentSelectItemResponseDTO.setItemOptions(contentItemOptionResponseDTOList);
+                ContentItemData contentItemData = contentItemDataRepository.findByContentIdAndItemId(content.getId(),item.getId());
+
+                contentSelectItemResponseDTO.setItemOptionValue(contentItemData.getItemValue());
+                contentItemResponseDTOList.add(contentSelectItemResponseDTO);
             }
 
             contentSelectTemplateResponseDTO.setTemplateItem(contentItemResponseDTOList);
@@ -138,9 +133,15 @@ public class ContentService {
 
         Optional<Content> selectTemplate = contentRepository.findById(contentRegisterRequestDTO.getId());
         // 템플릿을 가져오고 DTO로 변환
+        log.error("1111111111111111");
         Template template = templateRepository.findById(contentRegisterRequestDTO.getTemplateId()).orElse(null);
-
+        log.error("2222222222222");
+        log.error(selectTemplate.isPresent());
+        log.error(selectTemplate.get().getProvider());
+        log.error(contentRegisterRequestDTO.getProvider());
+        log.error(selectTemplate.get().getProvider().equals(contentRegisterRequestDTO.getProvider()));
         if (selectTemplate.isPresent() && selectTemplate.get().getProvider().equals(contentRegisterRequestDTO.getProvider())) {
+            log.error("3333333333333");
             Content content = selectTemplate.get();
             content.setName(contentRegisterRequestDTO.getName());
             content.setTemplate(template);

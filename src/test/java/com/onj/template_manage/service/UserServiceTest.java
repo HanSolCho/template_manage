@@ -3,8 +3,9 @@ package com.onj.template_manage.service;
 import com.onj.template_manage.DTO.Request.user.UserSignUpRequestDTO;
 import com.onj.template_manage.DTO.Response.user.UserSelectResponseDTO;
 import com.onj.template_manage.entity.User;
-import com.onj.template_manage.exception.user.UserAlreadyExistsException;
-import com.onj.template_manage.exception.user.UserNotFoundException;
+
+import com.onj.template_manage.exception.User.UserAlreadyExistsException;
+import com.onj.template_manage.exception.User.UserNotFoundException;
 import com.onj.template_manage.jwt.JwtTokenProvider;
 import com.onj.template_manage.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;

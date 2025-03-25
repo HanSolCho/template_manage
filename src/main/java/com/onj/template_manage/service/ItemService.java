@@ -56,6 +56,7 @@ public class ItemService {
                 ItemOption itemOption = ItemOption.builder()
                         .optionValue(option.getName())
                         .item(isNotTextItem)
+                        .isDeleted(false)
                         .build();
                 itemOptionRepository.save(itemOption);
             }
@@ -110,6 +111,7 @@ public class ItemService {
                     ItemOption itemOption = ItemOption.builder()
                             .optionValue(option.getName())
                             .item(updatedItem)
+                            .isDeleted(false)
                             .build();
                     itemOptionRepository.save(itemOption);
                 }
@@ -131,6 +133,26 @@ public class ItemService {
                 updateItem.setType(itemRegisterRequestDTO.getType());
 
                 itemRepository.save(updateItem);
+
+                if (itemRegisterRequestDTO.getOption() == null || itemRegisterRequestDTO.getOption().isEmpty()) {
+                    throw new ItemOptionIsNullException();
+                }
+
+                List<ItemOption> itemOptionList = itemOptionRepository.findByItemId(updateItem.getId());
+
+                for(ItemOption itemOption : itemOptionList) {
+                    itemOption.setIsDeleted(true);
+                    itemOptionRepository.save(itemOption);
+                }
+
+                for (ItemOptionRegisterRequestDTO option : itemRegisterRequestDTO.getOption()) {
+                    ItemOption itemOption = ItemOption.builder()
+                            .optionValue(option.getName())
+                            .item(updateItem)
+                            .isDeleted(false)
+                            .build();
+                    itemOptionRepository.save(itemOption);
+                }
             }
 
         } else {

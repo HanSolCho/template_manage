@@ -1,4 +1,4 @@
-package com.onj.template_manage.exception.user;
+package com.onj.template_manage.exception.User;
 
 import com.onj.template_manage.exception.ErrorCode;
 import com.onj.template_manage.exception.TemplateManageException;

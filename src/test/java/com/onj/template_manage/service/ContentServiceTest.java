@@ -152,6 +152,7 @@ class ContentServiceTest {
         ItemOption itemOption = ItemOption.builder()
                 .id(1L)
                 .optionValue("Option1")
+                .isDeleted(false)
                 .build();
 
         item.setItemOptions(Arrays.asList(itemOption));
@@ -164,10 +165,17 @@ class ContentServiceTest {
                 .date(new Date())
                 .provider("provider1")
                 .build();
+        ContentItemData contentItemData = ContentItemData.builder()
+                .id(1L)
+                .item(item)
+                .content(content)
+                .itemValue("option1")
+                .build();
 
         // Mocking the repository method
         when(contentRepository.findById(contentId)).thenReturn(Optional.of(content));
-
+        when(contentItemDataRepository.findByContentIdAndItemId(contentId, item.getId()))
+                .thenReturn(contentItemData);
         // when
         ContentSelectResponseDTO result = contentService.selectContent(contentId);
 
@@ -180,9 +188,7 @@ class ContentServiceTest {
         assertNotNull(result.getTemplate().getTemplateItem());
         assertEquals(1, result.getTemplate().getTemplateItem().size());
         assertEquals("item1", result.getTemplate().getTemplateItem().get(0).getName());
-        assertNotNull(result.getTemplate().getTemplateItem().get(0).getItemOptions());
-        assertEquals(1, result.getTemplate().getTemplateItem().get(0).getItemOptions().size());
-        assertEquals("Option1", result.getTemplate().getTemplateItem().get(0).getItemOptions().get(0).getOptionValue());
+        assertNotNull(result.getTemplate().getTemplateItem().get(0).getItemOptionValue());
 
     }
 
