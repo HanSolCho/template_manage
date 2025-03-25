@@ -133,22 +133,13 @@ public class ContentService {
 
         Optional<Content> selectTemplate = contentRepository.findById(contentRegisterRequestDTO.getId());
         // 템플릿을 가져오고 DTO로 변환
-        log.error("1111111111111111");
         Template template = templateRepository.findById(contentRegisterRequestDTO.getTemplateId()).orElse(null);
-        log.error("2222222222222");
-        log.error(selectTemplate.isPresent());
-        log.error(selectTemplate.get().getProvider());
-        log.error(contentRegisterRequestDTO.getProvider());
-        log.error(selectTemplate.get().getProvider().equals(contentRegisterRequestDTO.getProvider()));
         if (selectTemplate.isPresent() && selectTemplate.get().getProvider().equals(contentRegisterRequestDTO.getProvider())) {
-            log.error("3333333333333");
             Content content = selectTemplate.get();
             content.setName(contentRegisterRequestDTO.getName());
             content.setTemplate(template);
 
             for (ContentItemDataRegisterRequestDTO contentItemDataUpdateRequestDTO : contentRegisterRequestDTO.getItemDataList()) {
-                // ContentItemData 객체 저장
-                // ITEM의 ID , ITEM의 VALUE
                 Item item = itemRepository.findById(contentItemDataUpdateRequestDTO.getItemId()).orElse(null);
                 ContentItemData contentItemData = contentItemDataRepository.findById(contentItemDataUpdateRequestDTO.getItemId()).orElse(null);
                 contentItemData.setItemValue(contentItemDataUpdateRequestDTO.getValue());
