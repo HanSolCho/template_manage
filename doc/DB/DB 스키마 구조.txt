@@ -1,0 +1,4 @@
+DB 스키마 구조
+
+- /doc/DB/DB_DATA_TABLE_BACKUP : 테스트 데이터 포함 SQL 파일과 H2 임베디드 DB 파일
+- /doc/DB/DB_NO_DATA_TABLE_BACKUP : 테스트 데이터 미포함 SQL 파일과 H2 임베디드 DB 파일

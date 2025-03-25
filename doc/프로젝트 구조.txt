@@ -1,0 +1,30 @@
+프로젝트 구조
+
+├───────────────────────────────────────────────────────────────────────────────────
+├─java                                                                             
+│  └─com                                                                           
+│      └─onj                                                                       
+│          └─template_manage                                                       
+│              ├─config               # Configration 설정 파일                        
+│              ├─controller           # 뷰로부터 오는 요청 처리                            
+│              ├─DTO				  # 요청/응답 처리를 위한 DTO 파일                      
+│              │  ├─Request           # 요청 DTO                                     
+│              │  │  ├─content                                                     
+│              │  │  ├─item                                                        
+│              │  │  ├─template                                                    
+│              │  │  └─user                                                        
+│              │  └─Response          # 응답 DTO                                     
+│              │      ├─content                                                    
+│              │      ├─Item                                                       
+│              │      ├─template                                                   
+│              │      └─user                                                       
+│              ├─entity               # DB 테이블과 맵핑하는 Entitiy 파일                  
+│              ├─exception            # 익셉션 처리를 위한 파일                            
+│              │  ├─content                                                        
+│              │  ├─Item                                                           
+│              │  ├─template                                                       
+│              │  └─user                                                           
+│              ├─jwt                  # JWT 적용을 위한 설정 파일                         
+│              ├─repository           # DB에 접근하여 데이터 취득하는 Repository 파일         
+│              └─service              # Controller를 통한 비즈니스 로직 처리                
+└───────────────────────────────────────────────────────────────────────────────────

@@ -1,0 +1,14 @@
+사용한 주요 라이브러리
+
+사용 외부 라이브러리 목록
+Spring Security, JWT, QueryDSL, Swagger, Lombok, H2, JPA
+
+Lombok : 다양한 데이터를 사용함에 있어 getter,setter를 비롯한 반복적으로 사용되는 코드를 줄이기 위해 사용
+
+JPA,H2 : 과제의 구현을 위한 JPA 적용과 인메모리 DB로 H2를 선택하였기에 사용
+
+Swaager : API 문서 작성 위한 라이브러리로 Swagger가 지정되었기에 사용. 이때 Spring Doc을 사용했으며 Spring Fox의 업데이트 중단이 지속되기에 Spring Doc 채택.
+
+JWT,Spring Security : 과제의 선택 사항으로 JWT 기반 인증 및 인가가 제시되어 사용.
+
+QueryDSL : 필요 기능 중 DB에 접근하여 다양한 필터 조건을 통한 결과값 추출이 필요한 상황에서 기본 JPA 문법으로 구현하게되면 코드가 복잡해지고 분기가 많아지며 데이터의 변화에 유연하게 대응하기 힘든다는 판단으로 사용하게되었음.
